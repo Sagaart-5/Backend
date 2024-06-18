@@ -18,14 +18,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 
     "djoser",
-    "django_redis",
     "social_django",
-    "drf_spectacular",
-    "drf_spectacular_sidecar",
-    "corsheaders",
     "rest_framework",
     "rest_framework.authtoken",
-    "phonenumber_field",
 
     "users.apps.UsersConfig",
     "arts.apps.ArtsConfig",
