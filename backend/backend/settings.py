@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "djoser",
-    "social_django",
     "rest_framework",
     "rest_framework_simplejwt",
     "drf_spectacular",
@@ -105,6 +104,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / 'staticfiles/static'
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
