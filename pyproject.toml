@@ -1,0 +1,9 @@
+[tool.isort]
+profile = "black"
+line_length = 79
+combine_as_imports = true
+include_trailing_comma = true
+skip_glob = ["**/migrations/*.py"]
+src_paths = ["backend"]
+no_lines_before = ["LOCALFOLDER"]
+lines_after_imports=2

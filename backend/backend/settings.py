@@ -1,12 +1,20 @@
+from datetime import timedelta
+from os import getenv
 from pathlib import Path
+
+import dotenv
+from django.core.management.utils import get_random_secret_key
+
+dotenv.load_dotenv()
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-to*fkm$v02q0cfv=&__#6w-gl3lb2)k!7spxtord-cux8ur6-o"
+SECRET_KEY = getenv("SECRET_KEY", get_random_secret_key())
 
-DEBUG = True
+DEBUG = getenv("DEBUG", "False").lower() in ("true", "1")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 INSTALLED_APPS = [
@@ -16,15 +24,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "djoser",
     "social_django",
     "rest_framework",
-    "rest_framework.authtoken",
-
+    "rest_framework_simplejwt",
+    "drf_spectacular",
+    "phonenumber_field",
     "users.apps.UsersConfig",
     "arts.apps.ArtsConfig",
-    "subscriptions.apps.SubscriptionsConfig"
+    "subscriptions.apps.SubscriptionsConfig",
 ]
 
 MIDDLEWARE = [
@@ -93,12 +101,37 @@ USE_TZ = True
 
 AUTH_USER_MODEL = "users.CustomUser"
 
-AUTHENTICATION_BACKENDS = [
-    "users.auth.AuthBackend",
-]
-
 
 STATIC_URL = "static/"
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=5),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    "HIDE_USERS": False,
+    "SERIALIZERS": {
+        "user": "api.v1.users.serializers.CustomUserListSerializer",
+    },
+    "PERMISSIONS": {
+        "token_create": ["rest_framework.permissions.AllowAny"],
+    },
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Sagaart API",
+    # "DESCRIPTION": "Your project description",
+    "VERSION": "1.0.0",
+}
