@@ -90,7 +90,11 @@ class TestUsers(TestCase):
                     self.user_url,
                     data=data,
                 )
-                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+                self.assertEqual(
+                    response.status_code,
+                    status.HTTP_400_BAD_REQUEST,
+                    response.data,
+                )
 
     def test_02_create_user(self):
         users_count = CustomUser.objects.count()
@@ -113,10 +117,14 @@ class TestUsers(TestCase):
             self.jwt_url,
             data=valid_user_data[0],
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        self.assertEqual(
+            response.status_code, status.HTTP_200_OK, response.data
+        )
 
         jwt_token = response.json()["access"]
-        response = self.client.get(self.user_url, headers={"Authorization": f"Bearer {jwt_token}"})
+        response = self.client.get(
+            self.user_url, headers={"Authorization": f"Bearer {jwt_token}"}
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # TODO: Check json response fields
 
@@ -127,4 +135,8 @@ class TestUsers(TestCase):
                     self.user_url,
                     data=data,
                 )
-                self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+                self.assertEqual(
+                    response.status_code,
+                    status.HTTP_201_CREATED,
+                    response.data,
+                )
