@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: |
-          pip install -r backend/requirements_dev.txt
+          pip install -r requirements_dev.txt
           flake8 backend/.
           black --check .
           isort --check .
