@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "arts.apps.ArtsConfig",
     "subscriptions.apps.SubscriptionsConfig",
+    "django_cleanup.apps.CleanupSelectedConfig",
 ]
 
 MIDDLEWARE = [
@@ -105,6 +106,9 @@ AUTH_USER_MODEL = "users.CustomUser"
 
 
 STATIC_URL = "static/"
+
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
