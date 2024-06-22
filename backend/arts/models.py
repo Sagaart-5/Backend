@@ -10,7 +10,8 @@ User = get_user_model()
 
 
 class NameModel(models.Model):
-    """Абстракная модель """
+    """Абстрактная модель с названием"""
+
     name = models.CharField(
         "Название", max_length=50, unique=True, db_index=True
     )
@@ -24,6 +25,8 @@ class NameModel(models.Model):
 
 
 class TypeModel(models.Model):
+    """Абстрактная модель с типом"""
+
     type = models.CharField("Тип", max_length=50, unique=True, db_index=True)
 
     class Meta:
