@@ -1,7 +1,9 @@
 from django.db import models
 
+
 class Subscription(models.Model):
     duration = models.CharField(
+        max_length=20,
         choices=[
             ('1 месяц', '1 месяц'),
             ('6 месяцев', '6 месяцев'),
