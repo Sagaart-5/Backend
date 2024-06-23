@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Art, Category, Color, Orientation, Size, Style
+from .models import Art, Category, Color, Event, Orientation, Size, Style
 
 
 @admin.register(Category, Size, Style)
@@ -46,3 +46,8 @@ class ArtAdmin(admin.ModelAdmin):
     search_fields = ("title", "author_name")
     search_help_text = "Поиск по названию или имени автора"
     list_filter = ("year", "category", "size", "style", "orientation", "color")
+
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ("id", "title", "begin", "end")
