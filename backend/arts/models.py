@@ -38,30 +38,40 @@ class TypeModel(models.Model):
 
 
 class Category(NameModel):
+    objects = None
+
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
 
 
 class Size(NameModel):
+    objects = None
+
     class Meta:
         verbose_name = "Размер"
         verbose_name_plural = "Размеры"
 
 
 class Style(NameModel):
+    objects = None
+
     class Meta:
         verbose_name = "Стиль"
         verbose_name_plural = "Стили"
 
 
 class Orientation(TypeModel):
+    objects = None
+
     class Meta:
         verbose_name = "Ориентация"
         verbose_name_plural = "Ориентации"
 
 
 class Color(TypeModel):
+    objects = None
+
     class Meta:
         verbose_name = "Цвет"
         verbose_name_plural = "Цвета"
