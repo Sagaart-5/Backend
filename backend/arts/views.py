@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 
 from .models import Art
 from .serializers import ArtSerializer, SellArtSerializer, EvaluationSerializer
+from users.models import CustomUser
 
 
 class ArtViewSet(viewsets.ModelViewSet):
@@ -65,3 +66,46 @@ def evaluate_art_object(request):
                 "message": "Invalid input data",
                 "errors": serializer.errors
             }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+def purchase_art_object(request):
+    """Покупка объекта искусства."""
+
+    if request.method == "POST":
+        objectId = request.data.get("objectId")
+        buyerId = request.data.get("buyerId")
+
+        # Проверка, существует ли объект искусства с заданным objectId
+        art_object = get_object_or_404(Art, id=objectId)
+
+        # Проверка, был ли объект уже продан
+        if art_object.sold:
+            return Response({
+                "success": False,
+                "message": "Object is already sold"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            buyer = CustomUser.objects.get(id=buyerId)
+        except CustomUser.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "Buyer not found"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Проверка, что покупатель не является автором объекта
+        if buyer.email == art_object.author_name:
+            return Response({
+                "success": False,
+                "message": "The author cannot purchase their own art object"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        art_object.sold = True
+        art_object.save()
+
+        response_data = {
+            "success": True,
+            "message": "Object purchased successfully"
+        }
+        return Response(response_data, status=status.HTTP_200_OK)

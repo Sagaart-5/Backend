@@ -79,9 +79,9 @@ class Color(TypeModel):
 
 @cleanup_select
 class Art(models.Model):
-    # author = models.ForeignKey(
-    #     User, on_delete=models.PROTECT, verbose_name="Автор"
-    # )
+    author = models.ForeignKey(
+        User, on_delete=models.PROTECT, verbose_name="Автор"
+    )
     category = models.ForeignKey(
         Category, on_delete=models.PROTECT, verbose_name="Категория"
     )
@@ -117,6 +117,10 @@ class Art(models.Model):
         validators=[MinValueValidator(100), validate_year],
     )
     created = models.DateField("Создан", auto_now_add=True)
+    sold = models.BooleanField(
+        "Объект продан",
+        default=False,
+    )
 
     class Meta:
         verbose_name = "Арт-объект"
