@@ -115,3 +115,26 @@ class Art(models.Model):
 
     def __str__(self):
         return f"Арт-объект {self.title!r} - {self.year} создания."
+
+
+@cleanup_select
+class Event(models.Model):
+    title = models.CharField("Название", max_length=150)
+    description = models.TextField("Описание", blank=True)
+    image = models.ImageField("Фото", upload_to="events/%Y/")
+    begin = models.DateField("Начало события")
+    end = models.DateField("Конец события")
+
+    class Meta:
+        verbose_name = "Событие"
+        verbose_name_plural = "События"
+        ordering = ["begin", "end"]
+
+    def __str__(self):
+        return f"{self.title}, {self.begin} - {self.end}"
+
+    def clean(self):
+        if self.end < self.begin:
+            self.end, self.begin = self.begin, self.end
+
+    # TODO: Проверять ли чтобы не создавать задним числом события?
