@@ -136,6 +136,7 @@ class Event(models.Model):
     title = models.CharField("Название", max_length=150)
     description = models.TextField("Описание", blank=True)
     image = models.ImageField("Фото", upload_to="events/%Y/")
+    link = models.URLField("Ссылка")
     begin = models.DateField("Начало события")
     end = models.DateField("Конец события")
 
