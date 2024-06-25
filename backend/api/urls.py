@@ -2,7 +2,11 @@ from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from arts import urls as arts_urls
-from arts.views import sell_art_object, evaluate_art_object, purchase_art_object
+from arts.views import (
+    evaluate_art_object,
+    purchase_art_object,
+    sell_art_object,
+)
 
 
 urlpatterns = [

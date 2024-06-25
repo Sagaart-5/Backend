@@ -1,12 +1,11 @@
-from rest_framework import viewsets
-from rest_framework import status
+from django.shortcuts import get_object_or_404
+from rest_framework import status, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 
-from .models import Art
-from .serializers import ArtSerializer, SellArtSerializer, EvaluationSerializer
 from users.models import CustomUser
+from .models import Art
+from .serializers import ArtSerializer, EvaluationSerializer, SellArtSerializer
 
 
 class ArtViewSet(viewsets.ModelViewSet):
@@ -27,15 +26,18 @@ def sell_art_object(request):
 
             response_data = {
                 "success": True,
-                "message": "Art object listed for sale successfully"
+                "message": "Art object listed for sale successfully",
             }
             return Response(response_data, status=status.HTTP_200_OK)
         else:
-            return Response({
-                "success": False,
-                "message": "Invalid input data",
-                "errors": serializer.errors
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    "success": False,
+                    "message": "Invalid input data",
+                    "errors": serializer.errors,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 @api_view(["POST"])
@@ -57,15 +59,18 @@ def evaluate_art_object(request):
                 "success": True,
                 "estimatedValue": estimated_value,
                 "currency": currency,
-                "message": "Art object evaluated successfully"
+                "message": "Art object evaluated successfully",
             }
             return Response(response_data, status=status.HTTP_200_OK)
         else:
-            return Response({
-                "success": False,
-                "message": "Invalid input data",
-                "errors": serializer.errors
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    "success": False,
+                    "message": "Invalid input data",
+                    "errors": serializer.errors,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 @api_view(["POST"])
@@ -81,31 +86,34 @@ def purchase_art_object(request):
 
         # Проверка, был ли объект уже продан
         if art_object.sold:
-            return Response({
-                "success": False,
-                "message": "Object is already sold"
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"success": False, "message": "Object is already sold"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
             buyer = CustomUser.objects.get(id=buyerId)
         except CustomUser.DoesNotExist:
-            return Response({
-                "success": False,
-                "message": "Buyer not found"
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"success": False, "message": "Buyer not found"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         # Проверка, что покупатель не является автором объекта
         if buyer.email == art_object.author_name:
-            return Response({
-                "success": False,
-                "message": "The author cannot purchase their own art object"
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    "success": False,
+                    "message": "The author cannot purchase their own art object",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         art_object.sold = True
         art_object.save()
 
         response_data = {
             "success": True,
-            "message": "Object purchased successfully"
+            "message": "Object purchased successfully",
         }
         return Response(response_data, status=status.HTTP_200_OK)

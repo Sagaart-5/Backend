@@ -1,7 +1,12 @@
 from django.utils.translation import gettext_lazy as _
+from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from arts.models import Category, Color, Event, Orientation, Size, Style
+from arts.models import Art, Category, Color, Event, Orientation, Size, Style
+
+
+def month_to_str(date):
+    return _(date.strftime("%B"))
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -14,10 +19,11 @@ class EventSerializer(serializers.ModelSerializer):
     def get_date(self, event) -> str:
         begin = event.begin
         end = event.end
-        month_to_str = lambda d: _(d.strftime("%B"))
         if begin.month == end.month:
             return f"{begin.day}-{end.day} {month_to_str(begin)}"
-        return f"{begin.day} {month_to_str(begin)}-{end.day} {month_to_str(end)}"
+        return (
+            f"{begin.day} {month_to_str(begin)}-{end.day} {month_to_str(end)}"
+        )
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -48,3 +54,52 @@ class OrientationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Orientation
         fields = ("id", "type")
+
+
+class ArtListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Art
+        fields = ("id", "title", "author_name", "image", "price")
+
+
+class ArtDetailSerializer(serializers.ModelSerializer):
+    category = serializers.CharField(source="category.name")
+    size = serializers.CharField(source="size.name")
+    style = serializers.CharField(source="style.name")
+    orientation = serializers.CharField(source="orientation.type")
+    color = serializers.CharField(source="color.type")
+
+    class Meta:
+        model = Art
+        fields = (
+            "id",
+            "author_name",
+            "title",
+            "image",
+            "price",
+            "category",
+            "size",
+            "style",
+            "orientation",
+            "color",
+        )
+
+
+class ArtCreateSerializer(serializers.ModelSerializer):
+    image = Base64ImageField()
+
+    class Meta:
+        model = Art
+        fields = (
+            "id",
+            "author_name",
+            "title",
+            "image",
+            "price",
+            "category",
+            "size",
+            "style",
+            "orientation",
+            "color",
+            "year",
+        )

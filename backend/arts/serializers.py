@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-from .models import Art, Category, Size, Style, Orientation, Color
+from .models import Art, Category, Color, Orientation, Size, Style
 
 
 class ArtSerializer(serializers.ModelSerializer):
-    """ Сериализатор для модели Art."""
+    """Сериализатор для модели Art."""
 
     class Meta:
         """Метакласс для указания модели и полей для сериализации."""
@@ -28,6 +28,7 @@ class ArtSerializer(serializers.ModelSerializer):
 
 class SellArtSerializer(serializers.ModelSerializer):
     """Сериализатор продажи объекта искусства."""
+
     class Meta:
         """Метакласс для указания модели и полей для сериализации."""
 
@@ -46,28 +47,30 @@ class EvaluationSerializer(serializers.ModelSerializer):
 
     objectId = serializers.IntegerField(required=True)
     category = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all(),
-        required=True
+        queryset=Category.objects.all(), required=True
     )
     size = serializers.PrimaryKeyRelatedField(
-        queryset=Size.objects.all(),
-        required=True
+        queryset=Size.objects.all(), required=True
     )
     style = serializers.PrimaryKeyRelatedField(
-        queryset=Style.objects.all(),
-        required=True
+        queryset=Style.objects.all(), required=True
     )
     orientation = serializers.PrimaryKeyRelatedField(
-        queryset=Orientation.objects.all(),
-        required=True
+        queryset=Orientation.objects.all(), required=True
     )
     color = serializers.PrimaryKeyRelatedField(
-        queryset=Color.objects.all(),
-        required=True
+        queryset=Color.objects.all(), required=True
     )
 
     class Meta:
         """Метакласс для указания модели и полей для сериализации."""
 
         model = Art
-        fields = ["objectId", "category", "size", "style", "orientation", "color"]
+        fields = [
+            "objectId",
+            "category",
+            "size",
+            "style",
+            "orientation",
+            "color",
+        ]

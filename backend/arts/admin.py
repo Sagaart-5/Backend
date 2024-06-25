@@ -39,6 +39,7 @@ class ArtAdmin(admin.ModelAdmin):
                     ("category", "size", "style"),
                     ("orientation", "color"),
                     "image",
+                    "author",
                 )
             },
         ),

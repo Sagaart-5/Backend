@@ -1,24 +1,11 @@
 from django.urls import include, path
-from rest_framework.routers import SimpleRouter
 
-from .users.views import CustomUserViewSet
-from .arts import views as art_views
-from .users import views as user_views
+from .arts.urls import router as art_router
+from .users.urls import router as user_router
 
-router = SimpleRouter()
-
-# Регистрация пользователей
-router.register("users", user_views.CustomUserViewSet, basename="users")
-
-# Регистрация объектов искусства
-router.register("categories", art_views.CategoryViewSet, basename="categories")
-router.register("colors", art_views.ColorViewSet, basename="colors")
-router.register("events", art_views.EventViewSet, basename="events")
-router.register("orientations", art_views.OrientationViewSet, basename="orientations")
-router.register("sizes", art_views.SizeViewSet, basename="sizes")
-router.register("styles", art_views.StyleViewSet, basename="styles")
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path("", include(art_router.urls)),
+    path("", include(user_router.urls)),
     path("", include("djoser.urls.jwt")),
 ]
