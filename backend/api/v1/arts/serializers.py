@@ -11,12 +11,13 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = ("id", "title", "link", "image", "date")
 
-    def get_date(self, event):
+    def get_date(self, event) -> str:
         begin = event.begin
         end = event.end
+        month_to_str = lambda d: _(d.strftime("%B"))
         if begin.month == end.month:
-            return f"{begin.day}-{end.day} {_(begin.strftime('%B'))}"
-        return f"{begin.day} {_(begin.strftime('%B'))}-{end.day} {_(end.strftime('%B'))}"
+            return f"{begin.day}-{end.day} {month_to_str(begin)}"
+        return f"{begin.day} {month_to_str(begin)}-{end.day} {month_to_str(end)}"
 
 
 class CategorySerializer(serializers.ModelSerializer):
