@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "djoser",
-    "social_django",
     "rest_framework",
     "rest_framework_simplejwt",
     "drf_spectacular",
@@ -36,7 +35,6 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "arts.apps.ArtsConfig",
     "subscriptions.apps.SubscriptionsConfig",
-    "django_cleanup.apps.CleanupSelectedConfig",
 ]
 
 MIDDLEWARE = [
@@ -107,9 +105,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 
 
 STATIC_URL = "static/"
-
-MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
+STATIC_ROOT = BASE_DIR / 'staticfiles/static'
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

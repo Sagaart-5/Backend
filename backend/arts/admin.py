@@ -58,7 +58,7 @@ class ArtAdmin(admin.ModelAdmin):
             },
         ),
     )
-    search_fields = ("title", "author_name")
+    search_fields = ("title", "art_author")
     search_help_text = "Поиск по названию или имени автора"
     list_filter = ("year", "category", "size", "style", "orientation", "color")
 
