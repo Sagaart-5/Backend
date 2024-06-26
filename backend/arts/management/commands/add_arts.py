@@ -43,7 +43,13 @@ class Command(BaseCommand):
 
                 art_author, _ = Author.objects.get_or_create(name=author_name)
                 category, _ = Category.objects.get_or_create(name=category)
-                price = int(price.replace(r" ", "").replace(" ", ""))
+                try:
+                    price = int(price.replace(r" ", "").replace(" ", ""))
+                except ValueError:
+                    self.stdout.write(
+                        self.style.ERROR(f"Can't parse price - {price}")
+                    )
+                    continue
                 orientation, _ = Orientation.objects.get_or_create(
                     type=orientation
                 )
@@ -60,6 +66,8 @@ class Command(BaseCommand):
                     style=style,
                     color=color,
                     size=size,
-                    year=timezone.now().year - random.randint(15, 150),
+                    defaults={
+                        "year": timezone.now().year - random.randint(15, 150),
+                    },
                 )
             self.stdout.write(self.style.SUCCESS("Added art objects"))
