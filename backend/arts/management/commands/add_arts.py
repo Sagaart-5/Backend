@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.management import BaseCommand
 from django.utils import timezone
 
-from arts.models import Author, Art, Category, Orientation, Style, Color, Size
+from arts.models import Art, Author, Category, Color, Orientation, Size, Style
 
 
 User = get_user_model()
@@ -25,7 +25,7 @@ class Command(BaseCommand):
             )
 
         with open(file_path, "r", encoding="utf-8") as f:
-            header = f.readline()
+            f.readline()
             for row in csv.reader(f):
                 (
                     title,
@@ -62,4 +62,4 @@ class Command(BaseCommand):
                     size=size,
                     year=timezone.now().year - random.randint(15, 150),
                 )
-            self.stdout.write(self.style.SUCCESS(f"Added art objects"))
+            self.stdout.write(self.style.SUCCESS("Added art objects"))

@@ -49,7 +49,7 @@ def evaluate_art_object(request):
         if serializer.is_valid():
             objectId = serializer.validated_data["objectId"]
 
-            art_object = get_object_or_404(Art, id=objectId)
+            get_object_or_404(Art, id=objectId)
 
             # Логика оценки стоимости
             estimated_value = 1000000  # Пример
@@ -104,7 +104,9 @@ def purchase_art_object(request):
             return Response(
                 {
                     "success": False,
-                    "message": "The author cannot purchase their own art object",
+                    "message": (
+                        "The author cannot purchase their own art object"
+                    ),
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )

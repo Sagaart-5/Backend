@@ -1,6 +1,15 @@
 from django.contrib import admin
 
-from .models import Art, Category, Color, Event, Orientation, Size, Style, Author
+from .models import (
+    Art,
+    Author,
+    Category,
+    Color,
+    Event,
+    Orientation,
+    Size,
+    Style,
+)
 
 
 @admin.register(Author)

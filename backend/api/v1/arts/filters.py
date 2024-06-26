@@ -1,9 +1,5 @@
 from django.db.models import Q
-from django_filters.rest_framework import (
-    CharFilter,
-    FilterSet,
-    MultipleChoiceFilter,
-)
+from django_filters.rest_framework import CharFilter, FilterSet
 
 from arts.models import Art
 
@@ -11,7 +7,9 @@ from arts.models import Art
 class ArtsFilterSet(FilterSet):
     price = CharFilter(method="get_price")
     category = CharFilter(method="add_filter", field_name="category__name")
-    orientation = CharFilter(method="add_filter", field_name="orientation__type")
+    orientation = CharFilter(
+        method="add_filter", field_name="orientation__type"
+    )
     color = CharFilter(method="add_filter", field_name="color__type")
     style = CharFilter(method="add_filter", field_name="style__name")
     size = CharFilter(method="add_filter", field_name="size__name")

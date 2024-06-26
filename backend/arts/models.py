@@ -111,7 +111,9 @@ class Art(models.Model):
         Color, on_delete=models.PROTECT, verbose_name="Цвет"
     )
 
-    art_author = models.ForeignKey(Author, verbose_name="Автор объекта", on_delete=models.PROTECT)
+    art_author = models.ForeignKey(
+        Author, verbose_name="Автор объекта", on_delete=models.PROTECT
+    )
     title = models.CharField("Название", max_length=255)
     image = models.ImageField("Фото", upload_to="arts/%Y/%m/%d/")
     price = models.PositiveIntegerField(
