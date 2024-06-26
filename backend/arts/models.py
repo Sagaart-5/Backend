@@ -77,6 +77,19 @@ class Color(TypeModel):
         verbose_name_plural = "Цвета"
 
 
+class Author(models.Model):
+    name = models.CharField("Автор объекта", max_length=255)
+    description = models.TextField("Описание", blank=True)
+    birth_date = models.DateField("Дата рождения", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Автор картины"
+        verbose_name_plural = "Авторы картин"
+
+    def __str__(self):
+        return self.name
+
+
 @cleanup_select
 class Art(models.Model):
     author = models.ForeignKey(
@@ -98,7 +111,7 @@ class Art(models.Model):
         Color, on_delete=models.PROTECT, verbose_name="Цвет"
     )
 
-    author_name = models.CharField("Автор объекта", max_length=255)
+    art_author = models.ForeignKey(Author, verbose_name="Автор объекта", on_delete=models.PROTECT)
     title = models.CharField("Название", max_length=255)
     image = models.ImageField("Фото", upload_to="arts/%Y/%m/%d/")
     price = models.PositiveIntegerField(

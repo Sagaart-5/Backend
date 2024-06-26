@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from .models import Art, Category, Color, Event, Orientation, Size, Style
+from .models import Art, Category, Color, Event, Orientation, Size, Style, Author
+
+
+@admin.register(Author)
+class AuthorAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(Category, Size, Style)
@@ -19,7 +24,7 @@ class TypedAdmin(admin.ModelAdmin):
 class ArtAdmin(admin.ModelAdmin):
     list_display = (
         "title",
-        "author_name",
+        "art_author",
         "year",
         "price",
         "category",
@@ -33,7 +38,7 @@ class ArtAdmin(admin.ModelAdmin):
             None,
             {
                 "fields": (
-                    "author_name",
+                    "art_author",
                     ("title", "year"),
                     "price",
                     ("category", "size", "style"),

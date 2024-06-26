@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from arts.models import Art, Category, Color, Event, Orientation, Size, Style
+from arts.models import Art, Category, Color, Event, Orientation, Size, Style, Author
 
 
 def month_to_str(date):
@@ -56,13 +56,22 @@ class OrientationSerializer(serializers.ModelSerializer):
         fields = ("id", "type")
 
 
+class ArtAuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Author
+        fields = ("id", "name", "description")
+
+
 class ArtListSerializer(serializers.ModelSerializer):
+    art_author = serializers.CharField(source="art_author.name")
+
     class Meta:
         model = Art
-        fields = ("id", "title", "author_name", "image", "price")
+        fields = ("id", "title", "art_author", "image", "price")
 
 
 class ArtDetailSerializer(serializers.ModelSerializer):
+    art_author = ArtAuthorSerializer()
     category = serializers.CharField(source="category.name")
     size = serializers.CharField(source="size.name")
     style = serializers.CharField(source="style.name")
@@ -73,7 +82,7 @@ class ArtDetailSerializer(serializers.ModelSerializer):
         model = Art
         fields = (
             "id",
-            "author_name",
+            "art_author",
             "title",
             "image",
             "price",
@@ -92,7 +101,7 @@ class ArtCreateSerializer(serializers.ModelSerializer):
         model = Art
         fields = (
             "id",
-            "author_name",
+            "art_author",
             "title",
             "image",
             "price",
