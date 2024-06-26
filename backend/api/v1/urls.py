@@ -1,13 +1,11 @@
 from django.urls import include, path
-from rest_framework.routers import SimpleRouter
 
-from .users import views
+from .arts.urls import router as art_router
+from .users.urls import router as user_router
 
-
-router = SimpleRouter()
-router.register("users", views.CustomUserViewSet)
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path("", include(art_router.urls)),
+    path("", include(user_router.urls)),
     path("", include("djoser.urls.jwt")),
 ]

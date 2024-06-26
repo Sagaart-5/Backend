@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "drf_spectacular",
     "phonenumber_field",
+    "django_filters",
     "users.apps.UsersConfig",
     "arts.apps.ArtsConfig",
     "subscriptions.apps.SubscriptionsConfig",
