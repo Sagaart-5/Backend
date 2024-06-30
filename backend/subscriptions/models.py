@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Subscription(models.Model):
     duration = models.CharField(
         max_length=20,
@@ -18,4 +19,3 @@ class Subscription(models.Model):
         decimal_places=2,
         verbose_name='Цена'
     )
-
