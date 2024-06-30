@@ -71,8 +71,12 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': getenv('POSTGRES_DB', 'django'),
+        'USER': getenv('POSTGRES_USER', 'django'),
+        'PASSWORD': getenv('POSTGRES_PASSWORD', ''),
+        'HOST': getenv('DB_HOST', 'db'),
+        'PORT': getenv('DB_PORT', 5432),
     }
 }
 
@@ -138,3 +142,7 @@ SPECTACULAR_SETTINGS = {
     # "DESCRIPTION": "Your project description",
     "VERSION": "1.0.0",
 }
+
+
+CELERY_BROKER_URL = getenv("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = getenv("CELERY_BACKEND", "redis://redis:6379/0")
