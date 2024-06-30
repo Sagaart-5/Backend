@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django.db import models
 
 
@@ -17,3 +18,5 @@ class Subscription(models.Model):
     price = models.IntegerField(
         verbose_name='Цена'
     )
+=======
+>>>>>>> 6ab386c3cba7f8c8dc04d23735794d7b5c307384
