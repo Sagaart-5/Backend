@@ -2,12 +2,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from arts.models import (
-    Appraisal,
-    Art,
-    Author,
-    Event,
-)
+from arts.models import Appraisal, Art, Author, Event
 
 
 def month_to_str(date):
