@@ -17,7 +17,7 @@ DIGITS = r"\d+"
 def get_appraisal_price(art_id: int, user_id) -> int:
     appraisal_obj = Appraisal.objects.filter(
         art_id=art_id, user_id=user_id
-    ).select_related("author", "art")
+    ).select_related("art", "art__author")
     if appraisal_obj.exists():
         if appraisal_obj.first().status != Appraisal.Status.not_started:
             return -1
