@@ -55,7 +55,9 @@ class ArtViewSet(ReadOrCreateViewSet):
         return ArtSerializer
 
     def get_queryset(self):
-        queryset = Art.objects.all()
+        queryset = Art.objects.all().select_related(
+            "category", "orientation", "size", "color", "style", "author"
+        )
         if self.action == "most_popular":
             return queryset.order_by("-popular")
         return queryset
@@ -89,7 +91,6 @@ class ArtViewSet(ReadOrCreateViewSet):
             ),
             "colors": list(Color.objects.all().values_list("type", flat=True)),
         }
-        print(data)
         return JsonResponse(data, content_type="application/json")
 
     def perform_create(self, serializer):
@@ -113,10 +114,10 @@ class AppraisalViewSet(ListViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return self.request.user.appraisals.all()
+        return self.request.user.appraisals.all().select_related("art")
 
 
 @extend_schema(tags=[ARTS_TAG])
 class AuthorArtViewSet(RetrieveViewSet):
-    queryset = Author
+    queryset = Author.objects.all()
     serializer_class = AuthorArtSerializer
