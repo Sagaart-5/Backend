@@ -49,8 +49,8 @@ def get_appraisal_price(art_id: int, user_id) -> int:
         pad_material="",
         country=author.country,
         sex=author.gender,
-        solo_shows="музей",
-        group_shows="музей",
+        solo_shows=art_object.get_solo_shows(),
+        group_shows=art_object.get_group_shows(),
         age=age,
     )
     with transaction.atomic():

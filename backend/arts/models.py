@@ -170,6 +170,12 @@ class Art(models.Model):
     def __str__(self):
         return f"Арт-объект {self.title!r} - {self.year} создания."
 
+    def get_solo_shows(self):
+        return ", ".join(self.solo_shows.all().values_list("name", flat=True))
+
+    def get_group_shows(self):
+        return ", ".join(self.group_shows.all().values_list("name", flat=True))
+
 
 @cleanup_select
 class Event(models.Model):
