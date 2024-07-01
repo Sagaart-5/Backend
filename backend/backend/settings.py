@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "phonenumber_field",
     "django_filters",
+    "corsheaders",
     "users.apps.UsersConfig",
     "arts.apps.ArtsConfig",
 ]
@@ -145,6 +146,7 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
 }
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 CELERY_BROKER_URL = getenv("CELERY_BROKER", "redis://redis:6379/0")
 CELERY_RESULT_BACKEND = getenv("CELERY_BACKEND", "redis://redis:6379/0")
