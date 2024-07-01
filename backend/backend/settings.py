@@ -17,7 +17,7 @@ SECRET_KEY = getenv("SECRET_KEY", get_random_secret_key())
 DEBUG = getenv("DEBUG", "False").lower() in ("true", "1")
 
 ALLOWED_HOSTS = getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
-
+CSRF_TRUSTED_ORIGINS = getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -71,12 +71,12 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': getenv('POSTGRES_DB', 'sagaart_db'),
-        'USER': getenv('POSTGRES_USER', 'sagaart'),
-        'PASSWORD': getenv('POSTGRES_PASSWORD', ''),
-        'HOST': getenv('DB_HOST', 'db'),
-        'PORT': getenv('DB_PORT', 5432),
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": getenv("POSTGRES_DB", "sagaart_db"),
+        "USER": getenv("POSTGRES_USER", "sagaart"),
+        "PASSWORD": getenv("POSTGRES_PASSWORD", ""),
+        "HOST": getenv("DB_HOST", "db"),
+        "PORT": getenv("DB_PORT", 5432),
     }
 }
 
@@ -109,10 +109,10 @@ AUTH_USER_MODEL = "users.CustomUser"
 
 
 STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / 'staticfiles/static'
+STATIC_ROOT = BASE_DIR / "staticfiles/static"
 
 MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
