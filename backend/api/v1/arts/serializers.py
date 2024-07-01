@@ -2,16 +2,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from arts.models import (
-    Art,
-    Author,
-    Category,
-    Color,
-    Event,
-    Orientation,
-    Size,
-    Style,
-)
+from arts.models import Appraisal, Art, Author, Event
 
 
 def month_to_str(date):
@@ -35,52 +26,25 @@ class EventSerializer(serializers.ModelSerializer):
         )
 
 
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ("id", "name")
-
-
-class SizeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Size
-        fields = ("id", "name")
-
-
-class StyleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Style
-        fields = ("id", "name")
-
-
-class ColorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Color
-        fields = ("id", "type")
-
-
-class OrientationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Orientation
-        fields = ("id", "type")
+class ArtSearchFieldsSerializer(serializers.Serializer):
+    category = serializers.ListField()
+    styles = serializers.ListField()
+    sizes = serializers.ListField()
+    orientations = serializers.ListField()
+    colors = serializers.ListField()
 
 
 class ArtAuthorSerializer(serializers.ModelSerializer):
+    about = serializers.CharField(source="description")
+    image = Base64ImageField()
+
     class Meta:
         model = Author
-        fields = ("id", "name", "description")
+        fields = ("id", "name", "about", "image")
 
 
-class ArtListSerializer(serializers.ModelSerializer):
-    art_author = serializers.CharField(source="art_author.name")
-
-    class Meta:
-        model = Art
-        fields = ("id", "title", "art_author", "image", "price")
-
-
-class ArtDetailSerializer(serializers.ModelSerializer):
-    art_author = ArtAuthorSerializer()
+class ArtSerializer(serializers.ModelSerializer):
+    author = ArtAuthorSerializer()
     category = serializers.CharField(source="category.name")
     size = serializers.CharField(source="size.name")
     style = serializers.CharField(source="style.name")
@@ -91,7 +55,7 @@ class ArtDetailSerializer(serializers.ModelSerializer):
         model = Art
         fields = (
             "id",
-            "art_author",
+            "author",
             "title",
             "image",
             "price",
@@ -100,7 +64,34 @@ class ArtDetailSerializer(serializers.ModelSerializer):
             "style",
             "orientation",
             "color",
+            "description",
+            "popular",
         )
+
+
+class ArtListSerializer(ArtSerializer):
+    author = serializers.CharField(source="author.name")
+
+
+class ArtWithoutAuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Art
+        fields = (
+            "id",
+            "title",
+            "image",
+            "price",
+        )
+
+
+class AuthorArtSerializer(serializers.ModelSerializer):
+    about = serializers.CharField(source="description")
+    image = Base64ImageField()
+    arts = ArtWithoutAuthorSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Author
+        fields = ("id", "name", "about", "image", "arts")
 
 
 class ArtCreateSerializer(serializers.ModelSerializer):
@@ -110,7 +101,7 @@ class ArtCreateSerializer(serializers.ModelSerializer):
         model = Art
         fields = (
             "id",
-            "art_author",
+            "author",
             "title",
             "image",
             "price",
@@ -121,3 +112,18 @@ class ArtCreateSerializer(serializers.ModelSerializer):
             "color",
             "year",
         )
+
+
+class ArtShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Art
+        fields = ("id", "title")
+
+
+class AppraisalSerializer(serializers.ModelSerializer):
+    user = serializers.CurrentUserDefault()
+    art = ArtShortSerializer(read_only=True)
+
+    class Meta:
+        model = Appraisal
+        fields = ("user", "art", "status")

@@ -1,12 +1,14 @@
 from django.contrib import admin
 
 from .models import (
+    Appraisal,
     Art,
     Author,
     Category,
     Color,
     Event,
     Orientation,
+    Show,
     Size,
     Style,
 )
@@ -17,7 +19,7 @@ class AuthorAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Category, Size, Style)
+@admin.register(Category, Size, Show, Style)
 class NamedAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
@@ -33,7 +35,7 @@ class TypedAdmin(admin.ModelAdmin):
 class ArtAdmin(admin.ModelAdmin):
     list_display = (
         "title",
-        "art_author",
+        "author",
         "year",
         "price",
         "category",
@@ -47,18 +49,22 @@ class ArtAdmin(admin.ModelAdmin):
             None,
             {
                 "fields": (
-                    "art_author",
-                    ("title", "year"),
+                    "author",
+                    ("title", "year", "popular"),
                     "price",
                     ("category", "size", "style"),
                     ("orientation", "color"),
+                    "solo_shows",
+                    "group_shows",
                     "image",
-                    "author",
+                    "user",
                 )
             },
         ),
     )
-    search_fields = ("title", "art_author")
+    filter_horizontal = ("solo_shows", "group_shows")
+    raw_id_fields = ("user", "author")
+    search_fields = ("title", "author")
     search_help_text = "Поиск по названию или имени автора"
     list_filter = ("year", "category", "size", "style", "orientation", "color")
 
@@ -66,3 +72,8 @@ class ArtAdmin(admin.ModelAdmin):
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "begin", "end")
+
+
+@admin.register(Appraisal)
+class AppraisalAdmin(admin.ModelAdmin):
+    raw_id_fields = ("user", "art")

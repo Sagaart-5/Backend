@@ -77,10 +77,21 @@ class Color(TypeModel):
         verbose_name_plural = "Цвета"
 
 
+@cleanup_select
 class Author(models.Model):
+    class Gender(models.TextChoices):
+        MALE = "М", "Male"
+        FEMALE = "Ж", "Female"
+
     name = models.CharField("Автор объекта", max_length=255)
+    image = models.ImageField(
+        "Фото", upload_to="artists/%Y/%m/", null=True, blank=True
+    )
     description = models.TextField("Описание", blank=True)
-    birth_date = models.DateField("Дата рождения", null=True, blank=True)
+    gender = models.CharField("Пол", choices=Gender.choices, max_length=6)
+    country = models.CharField("Страна", max_length=50)
+    birth_date = models.DateField("Дата рождения")
+    death_date = models.DateField("Дата смерти", blank=True, null=True)
 
     class Meta:
         verbose_name = "Автор картины"
@@ -90,9 +101,15 @@ class Author(models.Model):
         return self.name
 
 
+class Show(NameModel):
+    class Meta:
+        verbose_name = "Показ"
+        verbose_name_plural = "Показы"
+
+
 @cleanup_select
 class Art(models.Model):
-    author = models.ForeignKey(
+    user = models.ForeignKey(
         User, on_delete=models.PROTECT, verbose_name="Автор"
     )
     category = models.ForeignKey(
@@ -111,10 +128,11 @@ class Art(models.Model):
         Color, on_delete=models.PROTECT, verbose_name="Цвет"
     )
 
-    art_author = models.ForeignKey(
+    author = models.ForeignKey(
         Author, verbose_name="Автор объекта", on_delete=models.PROTECT
     )
     title = models.CharField("Название", max_length=255)
+    description = models.TextField("Описание", blank=True)
     image = models.ImageField("Фото", upload_to="arts/%Y/%m/%d/")
     price = models.PositiveIntegerField(
         "Цена",
@@ -135,6 +153,13 @@ class Art(models.Model):
     sold = models.BooleanField(
         "Объект продан",
         default=False,
+    )
+    popular = models.PositiveSmallIntegerField("Популярность", default=0)
+    solo_shows = models.ManyToManyField(
+        Show, blank=True, related_name="solo_arts"
+    )
+    group_shows = models.ManyToManyField(
+        Show, blank=True, related_name="group_arts"
     )
 
     class Meta:
@@ -168,3 +193,36 @@ class Event(models.Model):
             self.end, self.begin = self.begin, self.end
 
     # TODO: Проверять ли чтобы не создавать задним числом события?
+
+
+class Appraisal(models.Model):
+    class Status(models.TextChoices):
+        not_started = "not_started", "Not started"
+        in_progress = "in_progress", "In Progress"
+        completed = "completed", "Completed"
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    art = models.ForeignKey(Art, on_delete=models.CASCADE)
+    status = models.CharField(
+        "Статус",
+        max_length=15,
+        choices=Status.choices,
+        default=Status.not_started,
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "art"], name="unique_art_user"
+            )
+        ]
+        verbose_name = "Оценка"
+        verbose_name_plural = "Оценки"
+        default_related_name = "appraisals"
+
+    def __str__(self):
+        return (
+            f"Оценка {self.art!r} "
+            f"пользователем {self.user!r} "
+            f"- статус {self.status!r}"
+        )

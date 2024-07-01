@@ -3,6 +3,7 @@ version: '3.3'
 volumes:
   pg_data:
   staticfiles:
+  mediafiles:
 
 services:
   db:
@@ -21,6 +22,7 @@ services:
     env_file: .env
     volumes:
       - staticfiles:/app/staticfiles
+      - mediafiles:/app/media/
     depends_on:
       db:
         condition: service_healthy
@@ -28,8 +30,30 @@ services:
   nginx:
     build: nginx/.
     ports:
-      - "80:80"
+      - "8000:80"
     volumes:
       - staticfiles:/staticfiles/
+      - mediafiles:/media/
     depends_on:
       - backend
+
+  redis:
+    image: redis:7.4-rc2-alpine
+
+  celery:
+    build: backend/.
+    command: celery -A backend worker -l INFO
+    env_file: .env
+    depends_on:
+      - backend
+      - redis
+
+  flower:
+    build: backend/.
+    ports:
+      - "5555:5555"
+    command: celery -A backend flower
+    env_file: .env
+    depends_on:
+      - backend
+      - redis
