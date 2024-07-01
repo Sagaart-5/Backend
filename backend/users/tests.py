@@ -73,7 +73,7 @@ invalid_user_data = [
 
 
 class TestUsers(TestCase):
-    user_url = reverse_lazy("customuser-list")
+    user_url = reverse_lazy("users-list")
     jwt_url = reverse_lazy("jwt-create")
 
     def setUp(self):
