@@ -222,7 +222,7 @@ class Appraisal(models.Model):
 
     def __str__(self):
         return (
-            f"Оценка {self.art!r} "
-            f"пользователем {self.user!r} "
+            f"Оценка {self.art.title!r} "
+            f"пользователем {self.user.get_full_name()!r} "
             f"- статус {self.status!r}"
         )
