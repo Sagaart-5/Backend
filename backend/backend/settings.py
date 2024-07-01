@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     "django_filters",
     "users.apps.UsersConfig",
     "arts.apps.ArtsConfig",
-    "subscriptions.apps.SubscriptionsConfig",
 ]
 
 MIDDLEWARE = [
@@ -72,8 +71,8 @@ WSGI_APPLICATION = "backend.wsgi.application"
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': getenv('POSTGRES_DB', 'django'),
-        'USER': getenv('POSTGRES_USER', 'django'),
+        'NAME': getenv('POSTGRES_DB', 'sagaart_db'),
+        'USER': getenv('POSTGRES_USER', 'sagaart'),
         'PASSWORD': getenv('POSTGRES_PASSWORD', ''),
         'HOST': getenv('DB_HOST', 'db'),
         'PORT': getenv('DB_PORT', 5432),
