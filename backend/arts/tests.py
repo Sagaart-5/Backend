@@ -11,7 +11,7 @@ class TestAge(TestCase):
             (date(2020, 1, 1), 44),
             (date(2020, 12, 31), 45),
             (None, 49),
-            (date(1939, 3, 5), -1)
+            (date(1939, 3, 5), -1),
         ):
             with self.subTest(end_date=end_date):
                 self.assertEqual(get_age(birth_date, end_date), expected_age)

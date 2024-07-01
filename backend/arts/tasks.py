@@ -1,14 +1,12 @@
 import re
-from datetime import date
 
 from celery import shared_task
 from django.db import transaction
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
 
-from .models import Appraisal, Art
+from .models import Appraisal
 from .Paintings_v2 import ArtObject, predict
 from .utils import get_age
+
 
 DIGITS = r"\d+"
 
@@ -17,7 +15,7 @@ DIGITS = r"\d+"
 def get_appraisal_price(art_id: int, user_id) -> int:
     appraisal_obj = Appraisal.objects.filter(
         art_id=art_id, user_id=user_id
-    ).select_related("author", "art")
+    ).select_related("art", "art__author")
     if appraisal_obj.exists():
         if appraisal_obj.first().status != Appraisal.Status.not_started:
             return -1
