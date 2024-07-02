@@ -51,6 +51,7 @@ class ArtAdmin(admin.ModelAdmin):
                 "fields": (
                     "author",
                     ("title", "year", "popular"),
+                    "description",
                     "price",
                     ("category", "size", "style"),
                     ("orientation", "color"),
