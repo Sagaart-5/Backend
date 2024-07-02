@@ -1,13 +1,23 @@
+# flake8:noqa
+from datetime import timedelta
+from os import getenv
 from pathlib import Path
+
+import dotenv
+from django.core.management.utils import get_random_secret_key
+
+
+dotenv.load_dotenv()
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-to*fkm$v02q0cfv=&__#6w-gl3lb2)k!7spxtord-cux8ur6-o"
+SECRET_KEY = getenv("SECRET_KEY", get_random_secret_key())
 
-DEBUG = True
+DEBUG = getenv("DEBUG", "False").lower() in ("true", "1")
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+CSRF_TRUSTED_ORIGINS = getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -16,20 +26,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "djoser",
-    "django_redis",
-    "social_django",
-    "drf_spectacular",
-    "drf_spectacular_sidecar",
-    "corsheaders",
     "rest_framework",
-    "rest_framework.authtoken",
+    "rest_framework_simplejwt",
+    "drf_spectacular",
     "phonenumber_field",
-
+    "django_filters",
+    "corsheaders",
     "users.apps.UsersConfig",
     "arts.apps.ArtsConfig",
-    "subscriptions.apps.SubscriptionsConfig"
 ]
 
 MIDDLEWARE = [
@@ -66,8 +71,12 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": getenv("POSTGRES_DB", "sagaart_db"),
+        "USER": getenv("POSTGRES_USER", "sagaart"),
+        "PASSWORD": getenv("POSTGRES_PASSWORD", ""),
+        "HOST": getenv("DB_HOST", "db"),
+        "PORT": getenv("DB_PORT", 5432),
     }
 }
 
@@ -98,12 +107,47 @@ USE_TZ = True
 
 AUTH_USER_MODEL = "users.CustomUser"
 
-AUTHENTICATION_BACKENDS = [
-    "users.auth.AuthBackend",
-]
-
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles/static"
+
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=5),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    "HIDE_USERS": False,
+    "SERIALIZERS": {
+        "user": "api.v1.users.serializers.CustomUserListSerializer",
+    },
+    "PERMISSIONS": {
+        "token_create": ["rest_framework.permissions.AllowAny"],
+    },
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Sagaart API",
+    # "DESCRIPTION": "Your project description",
+    "VERSION": "1.0.0",
+}
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CELERY_BROKER_URL = getenv("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = getenv("CELERY_BACKEND", "redis://redis:6379/0")
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True

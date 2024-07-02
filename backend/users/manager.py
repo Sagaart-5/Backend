@@ -1,63 +1,26 @@
-from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import UserManager
 
 
-class CustomUserManager(BaseUserManager):
-    """Менеджер модели пользователя."""
-
-    use_in_migrations = True
-
+class CustomUserManager(UserManager):
     def create_user(
-        self,
-        first_name: str,
-        last_name: str,
-        email: str,
-        password: str,
-        **extra_fields,
+        self, username=None, email=None, password=None, **extra_fields
     ):
-        extra_fields.setdefault("is_superuser", False)
-        extra_fields.setdefault("is_active", False)
-
-        """
-        Создает и сохраняет пользователя с заданными данными.
-        """
-
-        user = self.model(
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            **extra_fields,
-        )
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
+        return super().create_user(username, email, password, **extra_fields)
 
     def create_superuser(
-        self,
-        email: str,
-        password: str,
-        **extra_fields,
+        self, username=None, email=None, password=None, **extra_fields
     ):
-
-        extra_fields.setdefault("is_superuser", True)
-        extra_fields.setdefault("is_staff", True)
-
-        if extra_fields.get("is_superuser") is not True:
-            raise ValueError(
-                "Суперпользователь должен быть is_superuser=True."
-            )
-        """
-        Создает и сохраняет супер-пользователя с заданными данными.
-        """
-
-        user = self.create_user(
-            first_name="Админ",
-            last_name="@",
-            email=email,
-            password=password,
-            **extra_fields,
+        return super().create_superuser(
+            username, email, password, **extra_fields
         )
-        user.is_staff = True
-        user.is_superuser = True
-        user.is_active = True
+
+    def _create_user(self, username, email, password, **extra_fields):
+        """
+        Create and save a user with the given username, email, and password.
+        """
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.password = make_password(password)
         user.save(using=self._db)
         return user
