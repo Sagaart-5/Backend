@@ -1,0 +1,66 @@
+version: '3.3'
+
+volumes:
+  pg_data:
+  staticfiles:
+  mediafiles:
+
+services:
+  redis:
+    image: redis:7.4-rc2-alpine
+
+  db:
+    image: postgres:15-alpine
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h $DB_HOST -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: backend/.
+    env_file: .env
+    volumes:
+      - staticfiles:/app/staticfiles
+      - mediafiles:/app/media/
+    depends_on:
+      db:
+        condition: service_healthy
+
+  nginx:
+    build: nginx/.
+    ports:
+      - "8000:80"
+    volumes:
+      - staticfiles:/staticfiles/
+      - mediafiles:/media/
+    depends_on:
+      - backend
+      - frontend
+
+  celery:
+    build: backend/.
+    command: celery -A backend worker -l INFO
+    env_file: .env
+    depends_on:
+      - backend
+      - redis
+
+  flower:
+    build: backend/.
+    ports:
+      - "5555:5555"
+    command: celery -A backend flower
+    env_file: .env
+    depends_on:
+      - backend
+      - redis
+
+  frontend:
+    image: sagaart-front
+    command: cp -r /app/dist/. /frontend_static/
+    volumes:
+      - staticfiles:/frontend_static
