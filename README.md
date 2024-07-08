@@ -1,5 +1,9 @@
 # Sagaart - Backend
 
+<a href="https://github.com/Sagaart-5/Backend/actions?query=workflow:Code check">
+    <img alt="GitHub - Code check" src="https://github.com/Sagaart-5/Backend/actions/workflows/code_check.yml/badge.svg">
+</a>
+
 ### Маркетплейс с возможностью оценки арт-объекта с помощью машинного обучения. 
 
 ## Стек технологий
